@@ -7,7 +7,7 @@ import torch.nn.functional as F
 
 from ultralytics.utils.torch_utils import fuse_conv_and_bn
 
-from .conv import Conv, DWConv, GhostConv, LightConv, RepConv, autopad
+from .conv import Conv, DWConv, GhostConv, LightConv, CBAM,RepConv, autopad
 from .transformer import TransformerBlock
 
 __all__ = (
@@ -20,7 +20,7 @@ __all__ = (
     "C2",
     "C3",
     "C2f",
-    "C2fAttn",
+    "C2fAttn","C2fCBAM",
     "ImagePoolingAttn",
     "ContrastiveHead",
     "BNContrastiveHead",
@@ -245,6 +245,23 @@ class C2f(nn.Module):
         y.extend(m(y[-1]) for m in self.m)
         return self.cv2(torch.cat(y, 1))
 
+
+class C2fCBAM(nn.Module):
+    '''
+    C2f + CBAM + c2f
+    '''
+    def __init__(self, c1, c2, n=1, shortcut=False, g=1, e=0.5):
+        super().__init__()
+        self.cv1 = C2f(c1,c2,n,shortcut,g,e)
+        self.cbam = CBAM(c2)
+        self.cv2 = C2f(c2   ,c2,n,shortcut,g,e)
+        
+    def forward(self,x):
+        x = self.cv1(x)
+        shortcut = x
+        x = self.cbam(x)
+        x = self.cv2(x + shortcut)
+        return x
 
 class C3(nn.Module):
     """CSP Bottleneck with 3 convolutions."""

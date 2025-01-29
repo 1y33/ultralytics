@@ -33,6 +33,8 @@ from ultralytics.nn.modules import (
     C2fPSA,
     C3Ghost,
     C3k2,
+    CBAM,
+    C2fCBAM,
     C3x,
     CBFuse,
     CBLinear,
@@ -476,6 +478,7 @@ class ClassificationModel(BaseModel):
                     m[i] = nn.Conv2d(m[i].in_channels, nc, m[i].kernel_size, m[i].stride, bias=m[i].bias is not None)
 
     def init_criterion(self):
+        
         """Initialize the loss criterion for the ClassificationModel."""
         return v8ClassificationLoss()
 
@@ -981,6 +984,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             C2,
             C2f,
             C3k2,
+            C2fCBAM,
             RepNCSPELAN4,
             ELAN1,
             ADown,
@@ -995,6 +999,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             C3x,
             RepC3,
             PSA,
+            CBAM,
             SCDown,
             C2fCIB,
         }:
@@ -1006,13 +1011,14 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
                 args[2] = int(
                     max(round(min(args[2], max_channels // 2 // 32)) * width, 1) if args[2] > 1 else args[2]
                 )  # num heads
-
+                
             args = [c1, c2, *args[1:]]
             if m in {
                 BottleneckCSP,
                 C1,
                 C2,
                 C2f,
+                C2fCBAM, ## added by me
                 C3k2,
                 C2fAttn,
                 C3,
