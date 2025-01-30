@@ -16,16 +16,19 @@ def main():
     # Load model yaml
     # model_loaded_weights = YOLO("yolov5newtest.yaml").load("yolov5su.pt")
     # model_after_training = YOLO("runs/detect/train519/weights/best.pt")    
-    model = YOLO("yolov5CBAM.yaml")
-    model.load("yolov5nu.pt")
+    model = YOLO("YOLO/yolov5sC2C3GhostBig2.yaml")
     # model = YOLO('yolov5nu.yaml')
     imgsz = 1024
-    # model.train(data="VisDrone.yaml",resume=False, batch=.60, epochs=50, dropout=0.0, lr0=1e-3, lrf=1e-3, name="Test", imgsz=imgsz, cos_lr=True, seed=0, optimizer="adam", save_period=10, cache=False, workers=8)
+
+    model.train(data="VisDrone.yaml",resume=False, batch=.60, epochs=50, dropout=0.0, lr0=1e-3, lrf=1e-3, name="Test", imgsz=imgsz, cos_lr=True, seed=0, optimizer="adam", save_period=10, cache=False, workers=8)
     # import torch
     # from ultralytics.nn.modules.conv import CBAM
-    model.export(format="edgetpu", imgsz=imgsz);
+    # model.export(format="edgetpu", imgsz=imgsz);
 
 
-
+    import torch
+    x_input = torch.rand([1,3,1024,1024])
+    nnmodel = model.model
+    nnmodel._predict_once(x_input)
 
 main()

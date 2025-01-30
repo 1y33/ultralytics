@@ -145,9 +145,11 @@ class BaseModel(nn.Module):
             (torch.Tensor): The last output of the model.
         """
         y, dt, embeddings = [], [], []  # outputs
+        print("=="*50)
         for m in self.model:
             if m.f != -1:  # if not from previous layer
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
+            print(f"Module {m.i} input shape: {x[0].shape if isinstance(x, list) else x.shape}")  # <-- Added line
             if profile:
                 self._profile_one_layer(m, x, dt)
             x = m(x)  # run
