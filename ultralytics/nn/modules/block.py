@@ -20,7 +20,7 @@ __all__ = (
     "C2",
     "C3",
     "C2f",
-    "C2fAttn","C2fCBAM",
+    "C2fAttn","C2fCBAM","GhostCBAM",
     "ImagePoolingAttn",
     "ContrastiveHead",
     "BNContrastiveHead",
@@ -262,6 +262,28 @@ class C2fCBAM(nn.Module):
         x = self.cbam(x)
         x = self.cv2(x + shortcut)
         return x
+####
+#    MY area
+###
+
+class GhostCBAM(nn.Module):
+    '''
+    C3Ghost + CBAM  + GhostBotlenEnk
+    '''
+    def __init__(self, c1, c2, n=1, shortcut=False, g=1, e=0.5):
+        super().__init__()
+        self.cv1 = GhostBottleneck(c1,c2)
+        self.cbam = CBAM(c2)
+        self.cv2 = GhostBottleneck(c2,c2)
+        
+    def forward(self,x):
+        x = self.cv1(x)
+        shortcut = x
+        x = self.cbam(x)
+        x = self.cv2(x + shortcut)
+        return x
+
+#######
 
 class C3(nn.Module):
     """CSP Bottleneck with 3 convolutions."""

@@ -11,6 +11,7 @@ import torch
 import torch.nn as nn
 
 from ultralytics.nn.modules import (
+    C2fCBAM,GhostCBAM,
     AIFI,
     C1,
     C2,
@@ -34,7 +35,6 @@ from ultralytics.nn.modules import (
     C3Ghost,
     C3k2,
     CBAM,
-    C2fCBAM,
     C3x,
     CBFuse,
     CBLinear,
@@ -145,11 +145,11 @@ class BaseModel(nn.Module):
             (torch.Tensor): The last output of the model.
         """
         y, dt, embeddings = [], [], []  # outputs
-        print("=="*50)
+        # print("=="*50)
         for m in self.model:
             if m.f != -1:  # if not from previous layer
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
-            print(f"Module {m.i} input shape: {x[0].shape if isinstance(x, list) else x.shape}")  # <-- Added line
+            # print(f"Module {m.i} input shape: {x[0].shape if isinstance(x, list) else x.shape}")  # <-- Added line
             if profile:
                 self._profile_one_layer(m, x, dt)
             x = m(x)  # run
@@ -986,7 +986,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             C2,
             C2f,
             C3k2,
-            C2fCBAM,
+            C2fCBAM,GhostCBAM,
             RepNCSPELAN4,
             ELAN1,
             ADown,
@@ -1020,7 +1020,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
                 C1,
                 C2,
                 C2f,
-                C2fCBAM, ## added by me
+                C2fCBAM,GhostCBAM, ## added by me
                 C3k2,
                 C2fAttn,
                 C3,

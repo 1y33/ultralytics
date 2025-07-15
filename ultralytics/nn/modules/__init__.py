@@ -42,7 +42,7 @@ from .block import (
     C2fPSA,
     C3Ghost,
     C3k2,
-    C2fCBAM,
+    C2fCBAM,GhostCBAM,
     C3x,
     CBFuse,
     CBLinear,
