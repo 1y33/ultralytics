@@ -5,14 +5,14 @@ import ultralytics.utils
 import ultralytics.utils.torch_utils
 
 
-MODEL_CONFIG = "YOLO/yolov5C2C2fCBAMGhostBig3.yaml"
+MODEL_CONFIG = "ultralytics/yolov5n1024.yaml"
 MODEL_WEIGHTS = "yolov5su.pt"
 TRAINED_MODEL_PATH = "runs/detect/train519/weights/best.pt"
 
 TRAINING_CONFIG = {
     "data": "VisDrone.yaml",
     "resume": False,
-    "batch": 0.60,
+    "batch": 64,
     "epochs": 50,
     "dropout": 0.0,
     "lr0": 1e-3,
